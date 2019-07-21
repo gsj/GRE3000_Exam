@@ -11,7 +11,7 @@ sw = win.winfo_screenwidth()
 sh = win.winfo_screenheight()
 ww = 250
 wh = 180
-x = (sw - ww) / 8
+x = (sw - ww) / 4
 y = (sh - wh) / 2
 win.geometry("%dx%d+%d+%d" % (ww, wh, x, y))
 
