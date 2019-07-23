@@ -38,6 +38,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.r12 = list(set(self.r1 + self.r2))
         self.rexam = self.r0
         self.num = 0
+        self.numf = 0
         self.flag = 0
         self.numlasat = 0
         self.nnum = 0
@@ -100,22 +101,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def Find(self):
         self.numlasat = self.num
         word0 = self.lineEdit.text()
+        flagfind = False
         for i in range(2, ws0.nrows + 1):
             if ws0.cell(i - 1, 4).value == word0:
                 self.num = i
                 self.showtext()
+                flagfind = True
+        for i in range(2, ws1.nrows + 1):
+            if ws1.cell(i - 1, 2).value == word0:
+                self.numf = i
+                if not flagfind:
+                    self.textBrowser.clear()
+                    self.textBrowser_3.clear()
+                self.showtextf()
 
     def Copy(self):
         self.numlasat = self.num
-        #word0 = self.textBrowser_2.textCursor().selectedText()
-        if len(word0) == 0:
-            word0 = self.textBrowser_3.textCursor().selectedText()
+        word0 = self.textBrowser_3.textCursor().selectedText()
+        flagfind = False
         if len(word0) == 0:
             word0 = self.textBrowser.textCursor().selectedText()
         for i in range(2, ws0.nrows + 1):
             if ws0.cell(i - 1, 4).value == word0:
                 self.num = i
                 self.showtext()
+                flagfind = True
+        for i in range(2, ws1.nrows + 1):
+            if ws1.cell(i - 1, 2).value == word0:
+                self.numf = i
+                if not flagfind:
+                    self.textBrowser.clear()
+                    self.textBrowser_3.clear()
+                self.showtextf()
 
     def Copylist(self):
         self.numlasat = self.num
@@ -268,7 +285,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     break
         else:
             while True:
-                self.num += 1
+                self.num -= 1
                 if self.easy and ws0.cell(self.num - 1, 0).value == 1 \
                         or self.medium and ws0.cell(self.num - 1, 0).value == 2 \
                         or self.hard and ws0.cell(self.num - 1, 0).value == 3:
@@ -324,6 +341,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.textBrowser.append('填空：')
             self.textBrowser.append(ws0.cell(self.num - 1, 9).value)
 
+    def showtextf(self):
+        self.lineEdit.setText(ws1.cell(self.numf - 1, 2).value)
+        self.textBrowser.append('')
+        strr = 'List：' + str(ws1.cell(self.numf - 1, 8).value)
+        self.textBrowser.append(strr)
+        self.textBrowser.append('')
+        self.textBrowser.append('释义：')
+        self.textBrowser.append(ws1.cell(self.numf - 1, 4).value)
+        self.textBrowser.append('')
+        strr = '词性：' + str(ws1.cell(self.numf - 1, 3).value)
+        self.textBrowser.append(strr)
+
 
 if __name__ == "__main__":
     import sys
@@ -331,6 +360,7 @@ if __name__ == "__main__":
     import random
     wb = xlrd.open_workbook('ynm3000.xls')
     ws0 = wb.sheet_by_index(0)
+    ws1 = wb.sheet_by_index(1)
 
     app = QApplication(sys.argv)
     myWin = MainWindow()
